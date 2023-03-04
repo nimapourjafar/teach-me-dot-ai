@@ -7,6 +7,8 @@ from langchain.embeddings import OpenAIEmbeddings
 import pickle
 from langchain.document_loaders import PagedPDFSplitter
 from dotenv import load_dotenv
+from langchain.chains import VectorDBQAWithSourcesChain
+from langchain import OpenAI
 
 load_dotenv()
 
@@ -31,3 +33,28 @@ def upload_file():
         pickle.dump(store, f)
 
     return 'File uploaded successfully'
+
+@app.route('/generate', methods=['POST'])
+def generate_answer():
+    filename = request.form['filename']
+    question = request.form['question']
+
+    index = faiss.read_index(os.path.join(app.config['UPLOAD_FOLDER'], f"{filename}.index"))
+    with open(os.path.join(app.config['UPLOAD_FOLDER'], f"{filename}.pkl"), "rb") as f:
+        store = pickle.load(f)
+
+    store.index = index
+    chain = VectorDBQAWithSourcesChain.from_chain_type(llm=OpenAI(
+        temperature=0, max_tokens=500), chain_type="map_reduce", vectorstore=store)
+
+    result = chain({"question": question})
+
+    return result['answer']
+
+# Serve the uploaded PDF file
+@app.route('/pdf/<path:filename>')
+def download_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+if __name__ == '__main__':
+    app.run()
