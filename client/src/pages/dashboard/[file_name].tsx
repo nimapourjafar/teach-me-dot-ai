@@ -17,6 +17,9 @@ const Dashboard = () => {
     if (file_name == undefined) {
       return;
     }
+    if (chapters.length > 0) {
+      return;
+    }
 
     // @ts-ignore
     formdata.append("filename", file_name);
@@ -30,9 +33,9 @@ const Dashboard = () => {
     fetch("http://127.0.0.1:5000/get-chapters", requestOptions)
       .then((response) => response.text())
       .then((result) => {
-        console.log(result);
+        console.log(JSON.parse(result)["chapters"]);
         // @ts-ignore
-        setChapters(JSON.parse(result));
+        setChapters(JSON.parse(result)["chapters"]);
       })
       .catch((error) => console.log("error", error));
   }, [file_name]);
