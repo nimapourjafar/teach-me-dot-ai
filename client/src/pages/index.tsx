@@ -3,10 +3,12 @@ import Image from "next/image";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 import UploadFile from "../../components/UploadFile";
+import { useRouter } from "next/router";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  const router = useRouter();
   return (
     <>
       <Head>
@@ -37,10 +39,10 @@ export default function Home() {
         </div>
         <div className={styles.grid}>
           <a
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
             className={styles.card}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => {router.push("/dashboard/axler")}}
           >
             <h2 className={inter.className}>
               Linear Algebra - Sheldon Axler <span>-&gt;</span>
@@ -51,10 +53,10 @@ export default function Home() {
           </a>
 
           <a
-            href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
             className={styles.card}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => {router.push("/dashboard/principles")}}
           >
             <h2 className={inter.className}>
               Principles - Ray Dalio <span>-&gt;</span>
@@ -66,10 +68,10 @@ export default function Home() {
           </a>
 
           <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
             className={styles.card}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => {router.push("/dashboard/Harcourt-Mathematics-12-Advanced-Functions-and-Introductory-Calculus")}}
           >
             <h2 className={inter.className}>
               Intro to Calculus - Harcourt Math <span>-&gt;</span>
