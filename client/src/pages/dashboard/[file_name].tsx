@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Chat from "../../../components/Chat";
 import Quiz from "../../../components/Quiz";
 import Summarize from "../../../components/Summarize";
@@ -8,8 +8,34 @@ import { useRouter } from "next/router";
 const Dashboard = () => {
   const router = useRouter();
   const [display, setDisplay] = useState<"chat" | "summarize" | "quiz">("chat");
-
+  const [chapters, setChapters] = useState<string[]>([]);
   const { file_name } = router.query;
+
+  useEffect(() => {
+    var formdata = new FormData();
+
+    if (file_name == undefined) {
+      return;
+    }
+
+    // @ts-ignore
+    formdata.append("filename", file_name);
+
+    var requestOptions: RequestInit = {
+      method: "POST",
+      body: formdata,
+      redirect: "follow",
+    };
+
+    fetch("http://127.0.0.1:5000/get-chapters", requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        console.log(result);
+        // @ts-ignore
+        setChapters(JSON.parse(result));
+      })
+      .catch((error) => console.log("error", error));
+  }, [file_name]);
 
   const renderComponent = () => {
     switch (display) {
@@ -17,7 +43,7 @@ const Dashboard = () => {
         // @ts-ignore
         return <Chat fileName={file_name || ""} />;
       case "summarize":
-        return <Summarize />;
+        return <Summarize chapters={chapters} />;
       case "quiz":
         return <Quiz />;
       default:
