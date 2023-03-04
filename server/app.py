@@ -9,6 +9,7 @@ from langchain.document_loaders import PagedPDFSplitter
 from dotenv import load_dotenv
 from langchain.chains import VectorDBQAWithSourcesChain
 from langchain import OpenAI
+from flask_cors import CORS
 
 load_dotenv()
 
@@ -16,6 +17,7 @@ os.environ["OPENAI_API_KEY"] = os.environ.get('OPENAI_API_KEY')
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'server/data'
+CORS(app)
 
 
 @app.route('/upload', methods=['POST'])

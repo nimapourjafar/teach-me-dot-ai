@@ -2,6 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
+import UploadFile from "../../components/UploadFile";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,23 +28,7 @@ export default function Home() {
         </div>
 
         <div className={styles.center}>
-          <Image
-            className={styles.logo}
-            src="/next.svg"
-            alt="Next.js Logo"
-            width={180}
-            height={37}
-            priority
-          />
-          <div className={styles.thirteen}>
-            <Image
-              src="/thirteen.svg"
-              alt="13"
-              width={40}
-              height={31}
-              priority
-            />
-          </div>
+          <UploadFile />
         </div>
         <div>
           <h2 className="text-2xl font-bold text-white tracking-wider">
@@ -51,8 +36,6 @@ export default function Home() {
           </h2>
         </div>
         <div className={styles.grid}>
-
-
           <a
             href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
             className={styles.card}
@@ -77,7 +60,8 @@ export default function Home() {
               Principles - Ray Dalio <span>-&gt;</span>
             </h2>
             <p className={inter.className}>
-              Billionaire hedge fund manager Ray Dalio shares his principles for success.
+              Billionaire hedge fund manager Ray Dalio shares his principles for
+              success.
             </p>
           </a>
 
@@ -91,7 +75,8 @@ export default function Home() {
               Intro to Calculus - Harcourt Math <span>-&gt;</span>
             </h2>
             <p className={inter.className}>
-              Have a calc test coming up? Get all your answers and practice here!
+              Have a calc test coming up? Get all your answers and practice
+              here!
             </p>
           </a>
         </div>
