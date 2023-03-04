@@ -149,7 +149,7 @@ function QuizMessage({ quiz }: { quiz: QuizContent }) {
                   {option.isCorrect ? "Correct" : "Incorrect"}
                 </span>
               )}
-            </div>
+            </div> 
             {selectedOptionIndex === index && (
               <p className="mt-2 text-sm text-gray-500">{option.explanation}</p>
             )}
