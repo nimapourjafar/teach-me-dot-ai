@@ -57,7 +57,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="flex flex-row h-screen">
+    <div className="flex flex-row h-screen overflow-y-clip">
       <div className="w-1/4 bg-gray-800 text-gray-100">
         <div className="flex flex-col justify-center">
           <button

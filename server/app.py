@@ -60,7 +60,7 @@ def generate_answer():
 
     store.index = index
     chain = VectorDBQAWithSourcesChain.from_chain_type(llm=OpenAI(
-        temperature=0, max_tokens=500), chain_type="map_reduce", vectorstore=store)
+        temperature=0, max_tokens=200), chain_type="map_reduce", vectorstore=store)
 
     result = chain({"question": question})
 
@@ -80,7 +80,7 @@ def get_chapters():
 
     store.index = index
     chain = VectorDBQAWithSourcesChain.from_chain_type(llm=OpenAI(
-        temperature=0, max_tokens=500), chain_type="map_reduce", vectorstore=store)
+        temperature=0, max_tokens=200), chain_type="map_reduce", vectorstore=store)
 
     result = chain({"question": "What are the chapters in this text?"})
 

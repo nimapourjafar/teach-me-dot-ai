@@ -31,7 +31,7 @@ export default function Summarize({
       "question",
       "Summarize chapter " +
         chapter +
-        ". Give me an in-depth overview and explain the main points."
+        ". Give me a succinct overview and explain the main points."
     );
 
     var requestOptions: RequestInit = {
@@ -60,11 +60,11 @@ export default function Summarize({
   };
 
   return (
-    <div className="h-full flex flex-col text-white">
+    <div className="h-screen flex flex-col text-white">
       {chapters == null ? (
-        <div className="flex-1 overflow-y-scroll">Loading chapters...</div>
+        <div className="flex-1 text-white ">Loading chapters...</div>
       ) : (
-        <div className="flex-1 overflow-y-scroll">
+        <div>
           {chapters.map((chapter) => (
             <button
               key={chapter}
@@ -80,16 +80,16 @@ export default function Summarize({
             </button>
           ))}
 
-          <div className="flex-1 overflow-y-scroll">
+          <div className="flex-1 h-screen space-y-2 overflow-y-scroll">
             {messages.map((message, index) => (
               <ChatMessage key={index} message={message} />
             ))}
+            {botIsTalking && (
+              <div className="py-2 px-4 rounded-lg max-w-xs mb-2 ml-auto bg-blue-500 text-white">
+                <p className="text-right">Teach me is replying...</p>
+              </div>
+            )}
           </div>
-          {botIsTalking && (
-            <div className="py-2 px-4 rounded-lg max-w-xs mb-2 ml-auto bg-blue-500 text-white">
-              <p className="text-right">Teach me is replying...</p>
-            </div>
-          )}
         </div>
       )}
     </div>
@@ -100,7 +100,7 @@ function ChatMessage({ message }: { message: Message }) {
   const isUser = message.author === "user";
   return (
     <div
-      className={`py-2 px-4 rounded-lg max-w-xs mb-2 ${
+      className={`mb-24	py-2 px-4 rounded-lg max-w-md  ${
         isUser ? "ml-auto bg-blue-500 text-white" : "mr-auto bg-gray-300"
       }`}
     >
