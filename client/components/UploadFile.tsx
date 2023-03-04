@@ -6,7 +6,8 @@ import { FiUpload } from "react-icons/fi";
 export default function UploadFile() {
   const router = useRouter();
   const [selectedFile, setSelectedFile] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
+  
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     //@ts-ignore
     accept: "application/pdf",
@@ -40,13 +41,14 @@ export default function UploadFile() {
       .then((response) => response.text())
 
       .then((result) => {
-        // @ts-ignore
-        router.push(`/dashboard/${selectedFile.name}`);
         // save filename to local storage
         const arrayOfFiles = JSON.parse(localStorage.getItem("files") || "[]");
         // @ts-ignore
         arrayOfFiles.push(selectedFile.name);
         localStorage.setItem("files", JSON.stringify(arrayOfFiles));
+
+        // @ts-ignore
+        router.push(`/dashboard/${selectedFile.name.slice(0, -4)}`);
       })
       .catch((error) => console.log("error", error));
   };
@@ -55,10 +57,10 @@ export default function UploadFile() {
     <div
       {...getRootProps()}
       className={`${
-        isDragActive ? "bg-blue-100" : ""
-      } rounded-lg p-4 text-center cursor-pointer border-2 border-white border-spacing-3`}
+        isDragActive ? "bg-gray-500" : ""
+      } rounded-lg p-4 text-center cursor-pointer border-2 border-white border-spacing-3 duration-200 transition`}
     >
-      <input {...getInputProps()} type="file" className="h-full w-full z-40" />
+      <input {...getInputProps()}  />
 
       {loading ? (
         <p className="mt-1 text-lg font-medium text-white">Loading...</p>
