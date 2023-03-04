@@ -37,7 +37,7 @@ export default function UploadFile() {
       redirect: "follow",
     };
 
-    fetch(process.env.API_ENDPOINT+"upload", requestOptions)
+    fetch(process.env.NEXT_PUBLIC_API_ENDPOINT+"upload", requestOptions)
       .then((response) => response.text())
 
       .then((result) => {

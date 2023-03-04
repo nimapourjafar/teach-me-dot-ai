@@ -86,7 +86,7 @@ def get_chapters():
 
     response = openai.Completion.create(
         model="text-davinci-003",
-        prompt="Turn the following text into a JSON structure:\n\n " +
+        prompt="Turn the following text into an array:\n\n " +
         result['answer']+"\n\n",
         temperature=0.7,
         max_tokens=256,

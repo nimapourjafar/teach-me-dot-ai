@@ -30,12 +30,12 @@ const Dashboard = () => {
       redirect: "follow",
     };
 
-    fetch(process.env.API_ENDPOINT + "get-chapters", requestOptions)
+    fetch(process.env.NEXT_PUBLIC_API_ENDPOINT + "get-chapters", requestOptions)
       .then((response) => response.text())
       .then((result) => {
-        console.log(JSON.parse(result)["chapters"]);
+        console.log(JSON.parse(result));
         // @ts-ignore
-        setChapters(JSON.parse(result)["chapters"]);
+        setChapters(JSON.parse(result));
       })
       .catch((error) => console.log("error", error));
   }, [file_name]);
@@ -49,7 +49,8 @@ const Dashboard = () => {
         // @ts-ignore
         return <Summarize chapters={chapters} fileName={file_name || ""} />;
       case "quiz":
-        return <Quiz />;
+        // @ts-ignore
+        return <Quiz fileName={file_name || ""} />;
       default:
         // @ts-ignore
         return <Chat fileName={file_name || ""} />;

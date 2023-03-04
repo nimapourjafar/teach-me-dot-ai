@@ -23,7 +23,7 @@ export default function Chat({ fileName }: { fileName: string }) {
       redirect: "follow",
     };
     // @ts-ignore
-    fetch(process.env.API_ENDPOINT +"generate", requestOptions)
+    fetch(process.env.NEXT_PUBLIC_API_ENDPOINT +"generate", requestOptions)
       .then((response) => response.text())
       .then((result) => {
         console.log(result);
