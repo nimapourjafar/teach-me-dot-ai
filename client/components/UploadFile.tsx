@@ -37,7 +37,7 @@ export default function UploadFile() {
       redirect: "follow",
     };
 
-    fetch("http://127.0.0.1:5000/upload", requestOptions)
+    fetch(process.env.API_ENDPOINT+"upload", requestOptions)
       .then((response) => response.text())
 
       .then((result) => {

@@ -30,7 +30,7 @@ const Dashboard = () => {
       redirect: "follow",
     };
 
-    fetch("http://127.0.0.1:5000/get-chapters", requestOptions)
+    fetch(process.env.API_ENDPOINT + "get-chapters", requestOptions)
       .then((response) => response.text())
       .then((result) => {
         console.log(JSON.parse(result)["chapters"]);

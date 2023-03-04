@@ -40,7 +40,7 @@ export default function Summarize({
       redirect: "follow",
     };
 
-    fetch("http://127.0.0.1:5000/generate", requestOptions)
+    fetch(process.env.API_ENDPOINT + "generate", requestOptions)
       .then((response) => response.text())
       .then((result) => {
         console.log(result);
