@@ -17,30 +17,40 @@ os.environ["OPENAI_API_KEY"] = os.environ.get('OPENAI_API_KEY')
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'server/data'
 
+
 @app.route('/upload', methods=['POST'])
 def upload_file():
     file = request.files['file']
-    filename = secure_filename(file.filename)
-    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    # get rid of the .pdf in the file name
 
-    loader = PagedPDFSplitter(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    filename = secure_filename(file.filename).split(".pdf")[0]
+
+    os.mkdir(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    
+    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename, filename+".pdf"))
+
+    loader = PagedPDFSplitter(os.path.join(
+        app.config['UPLOAD_FOLDER'], filename, filename+".pdf"))
     pages = loader.load_and_split()
 
     store = FAISS.from_documents(pages, OpenAIEmbeddings())
-    faiss.write_index(store.index, os.path.join(app.config['UPLOAD_FOLDER'], f"{filename}.index"))
+    faiss.write_index(store.index, os.path.join(
+        app.config['UPLOAD_FOLDER'], filename, f"{filename}.index"))
     store.index = None
-    with open(os.path.join(app.config['UPLOAD_FOLDER'], f"{filename}.pkl"), "wb") as f:
+    with open(os.path.join(app.config['UPLOAD_FOLDER'], filename, f"{filename}.pkl"), "wb") as f:
         pickle.dump(store, f)
 
     return 'File uploaded successfully'
+
 
 @app.route('/generate', methods=['POST'])
 def generate_answer():
     filename = request.form['filename']
     question = request.form['question']
 
-    index = faiss.read_index(os.path.join(app.config['UPLOAD_FOLDER'], f"{filename}.index"))
-    with open(os.path.join(app.config['UPLOAD_FOLDER'], f"{filename}.pkl"), "rb") as f:
+    index = faiss.read_index(os.path.join(
+        app.config['UPLOAD_FOLDER'], filename, f"{filename}.index"))
+    with open(os.path.join(app.config['UPLOAD_FOLDER'],filename, f"{filename}.pkl"), "rb") as f:
         store = pickle.load(f)
 
     store.index = index
@@ -52,9 +62,14 @@ def generate_answer():
     return result['answer']
 
 # Serve the uploaded PDF file
+
+
 @app.route('/pdf/<path:filename>')
 def download_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename,filename+".pdf")
+
 
 if __name__ == '__main__':
-    app.run()
+    app.run(
+        debug=True,
+    )
