@@ -11,11 +11,10 @@ export default function Quiz({ fileName }: { fileName: string }) {
     setMessages([...messages, message]);
 
     const updatedMessagesArray = [...messages, message];
+
     var formdata = new FormData();
-    console.log(fileName);
-    console.log(message.content);
-    formdata.append("filename", fileName);
-    formdata.append("question", message.content);
+    // @ts-ignore
+    formdata.append("quiz_subject", message.content);
 
     var requestOptions: RequestInit = {
       method: "POST",
@@ -23,15 +22,18 @@ export default function Quiz({ fileName }: { fileName: string }) {
       redirect: "follow",
     };
     // @ts-ignore
-    fetch(process.env.NEXT_PUBLIC_API_ENDPOINT + "generate", requestOptions)
+    fetch(process.env.NEXT_PUBLIC_API_ENDPOINT + "make-quiz", requestOptions)
       .then((response) => response.text())
       .then((result) => {
         console.log(result);
+        const parsedResult: QuizContent = JSON.parse(result);
+        console.log("parsedResult", parsedResult);
         setMessages([
           ...updatedMessagesArray,
           {
             author: "bot",
-            content: result,
+            isQuiz: true,
+            quiz: parsedResult,
           },
         ]);
         setBotIsTalking(false);
@@ -68,6 +70,7 @@ export default function Quiz({ fileName }: { fileName: string }) {
               addMessage({
                 author: "user",
                 content: msgTxt,
+                isQuiz: false,
               });
             }
           }}
@@ -78,6 +81,7 @@ export default function Quiz({ fileName }: { fileName: string }) {
             addMessage({
               author: "user",
               content: msgTxt,
+              isQuiz: false,
             });
           }}
           disabled={botIsTalking}
@@ -91,6 +95,11 @@ export default function Quiz({ fileName }: { fileName: string }) {
 
 function ChatMessage({ message }: { message: Message }) {
   const isUser = message.author === "user";
+  if (message.isQuiz) {
+    // @ts-ignore
+    return QuizMessage({ quiz: message.quiz });
+  }
+
   return (
     <div
       className={`py-2 px-4 rounded-lg max-w-xs mb-2 ${
@@ -101,16 +110,55 @@ function ChatMessage({ message }: { message: Message }) {
     </div>
   );
 }
-
 function QuizMessage({ quiz }: { quiz: QuizContent }) {
-  return <></>;
-}
+  const [selectedOptionIndex, setSelectedOptionIndex] = useState<number | null>(
+    null
+  );
 
-type Message = {
-  author: "user" | "bot";
-  content: string;
-  quiz?: QuizContent;
-};
+  function handleOptionClick(index: number) {
+    if (selectedOptionIndex === null) {
+      setSelectedOptionIndex(index);
+    }
+  }
+
+  return (
+    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md text-black">
+      <h2 className="text-2xl font-medium mb-4">{quiz.question}</h2>
+      <ul>
+        {/* @ts-ignore */}
+        {quiz.options.map((option, index) => (
+          <li
+            key={index}
+            className={`p-2 cursor-pointer ${
+              selectedOptionIndex !== null ? "opacity-50" : ""
+            }`}
+            onClick={() => handleOptionClick(index)}
+          >
+            <div
+              className={`flex justify-between items-center ${
+                selectedOptionIndex === index ? "bg-green-100" : ""
+              }`}
+            >
+              <span className="mr-2">{option.option}</span>
+              {selectedOptionIndex !== null && (
+                <span
+                  className={`${
+                    option.isCorrect ? "text-green-600" : "text-red-600"
+                  } font-medium`}
+                >
+                  {option.isCorrect ? "Correct" : "Incorrect"}
+                </span>
+              )}
+            </div>
+            {selectedOptionIndex === index && (
+              <p className="mt-2 text-sm text-gray-500">{option.explanation}</p>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
 type QuizContent = {
   question: string;
@@ -121,4 +169,11 @@ type QuizQuestion = {
   option: string;
   explanation: string;
   isCorrect: boolean;
+};
+
+type Message = {
+  author: "user" | "bot";
+  content?: string;
+  isQuiz: boolean;
+  quiz?: QuizContent;
 };

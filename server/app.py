@@ -98,6 +98,24 @@ def get_chapters():
     return response['choices'][0]['text']
 
 
+@app.route('/make-quiz', methods=['POST'])
+def make_quiz():
+    quiz_subject = request.form['quiz_subject']
+
+    response = openai.Completion.create(
+        model="text-davinci-003",
+        prompt="Create a  unique interesting quiz question about: \"" + quiz_subject +
+        "\"\n\n\nYou should generate 4 answers, one is right. Have an explanation for each answer. Return in a JSON structure\n\nThe JSON should look like this:\n\n{\nquestion:string,\noptions: []{\noption: string\nexplanation: string\nisCorrect: boolean\n}\n}\n\n KEYS SHOULD ALSO BE SURROUNDED BY DOUBLE QUOTES. The quiz:\n",
+        temperature=0.7,
+        max_tokens=450,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+    )
+
+    return response['choices'][0]['text']
+
+
 @app.route('/pdf/<path:filename>')
 def download_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename, filename+".pdf")
