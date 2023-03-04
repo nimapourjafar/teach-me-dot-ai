@@ -11,6 +11,9 @@ from langchain.chains import VectorDBQAWithSourcesChain
 from langchain import OpenAI
 from flask_cors import CORS
 import openai
+from flask_sslify import SSLify
+
+
 
 load_dotenv()
 
@@ -20,6 +23,9 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'server/data'
 CORS(app)
+sslify = SSLify(app)
+
+context = ('web.crt', 'web.key')
 
 
 @app.route('/upload', methods=['POST'])
@@ -86,7 +92,7 @@ def get_chapters():
 
     response = openai.Completion.create(
         model="text-davinci-003",
-        prompt="Turn the following text into an array:\n\n " +
+        prompt="Turn the following text into an array of chapters:\n\n " +
         result['answer']+"\n\n",
         temperature=0.7,
         max_tokens=256,
@@ -125,5 +131,6 @@ if __name__ == '__main__':
     app.run(
         debug=True,
         host="0.0.0.0",
-        port=8080
+        port=8080,
+        
     ) 
