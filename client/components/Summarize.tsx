@@ -40,6 +40,9 @@ export default function Summarize({
       redirect: "follow",
     };
 
+    // @ts-ignore
+    process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
+    
     fetch(process.env.NEXT_PUBLIC_API_ENDPOINT + "generate", requestOptions)
       .then((response) => response.text())
       .then((result) => {

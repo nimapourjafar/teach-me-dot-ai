@@ -37,6 +37,9 @@ export default function UploadFile() {
       redirect: "follow",
     };
 
+    // @ts-ignore
+    process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
+
     fetch(process.env.NEXT_PUBLIC_API_ENDPOINT+"upload", requestOptions)
       .then((response) => response.text())
 

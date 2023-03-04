@@ -1,5 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-
+const https = require('https');
+const httpsAgent = new https.Agent({
+    rejectUnauthorized: false,
+  });
+  
 export default function Quiz({ fileName }: { fileName: string }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [msgTxt, setMsgTxt] = useState("");
@@ -20,7 +24,11 @@ export default function Quiz({ fileName }: { fileName: string }) {
       method: "POST",
       body: formdata,
       redirect: "follow",
+    
     };
+    // @ts-ignore
+    process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
+
     // @ts-ignore
     fetch(process.env.NEXT_PUBLIC_API_ENDPOINT + "make-quiz", requestOptions)
       .then((response) => response.text())

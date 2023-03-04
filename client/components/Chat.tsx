@@ -22,6 +22,10 @@ export default function Chat({ fileName }: { fileName: string }) {
       body: formdata,
       redirect: "follow",
     };
+
+    // @ts-ignore
+    process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
+    
     // @ts-ignore
     fetch(process.env.NEXT_PUBLIC_API_ENDPOINT + "generate", requestOptions)
       .then((response) => response.text())
