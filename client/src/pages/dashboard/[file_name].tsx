@@ -1,10 +1,9 @@
-import React from 'react'
+import React, { useState } from "react";
+import styles from "@/styles/Home.module.css";
 
 const Dashboard = () => {
-  
-  return (
-    <div>Dashboard</div>
-  )
-}
+  const [display, setDisplay] = useState<"chat" | "summarize" | "quiz">("chat");
+  return <div>Dashboard</div>;
+};
 
-export default Dashboard
+export default Dashboard;
