@@ -106,6 +106,7 @@ export default function Home() {
             // get rid of .pdf from file
             return (
               <div
+                key={file}
                 onClick={() => {
                   router.push(`/dashboard/${file.split(".pdf")[0]}`);
                 }}
