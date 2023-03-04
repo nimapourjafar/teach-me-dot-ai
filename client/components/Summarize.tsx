@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 export default function Summarize({
   chapters,
@@ -97,11 +97,29 @@ export default function Summarize({
 }
 
 function ChatMessage({ message }: { message: Message }) {
+  const [showMessage, setShowMessage] = useState(false);
+
   const isUser = message.author === "user";
+  const messageRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const element = messageRef.current;
+    if (element) {
+      setShowMessage(true);
+    }
+  }, []);
+
   return (
     <div
-      className={`mb-24	py-2 px-4 rounded-lg max-w-md  ${
-        isUser ? "ml-auto bg-blue-500 text-white" : "mr-auto bg-gray-300"
+      ref={messageRef}
+      className={`py-2 px-4 rounded-lg max-w-xs mb-2 ${
+        isUser
+          ? "ml-auto bg-gradient-to-br from-blue-400 to-blue-500 text-white"
+          : "mr-auto bg-gradient-to-br from-gray-200 to-gray-300 text-gray-500"
+      } ${
+        showMessage
+          ? "opacity-100 transition-opacity duration-500"
+          : "opacity-0"
       }`}
     >
       <p className={`${isUser ? "text-right" : ""}`}>{message.content}</p>

@@ -59,24 +59,28 @@ const Dashboard = () => {
 
   return (
     <div className="flex flex-row h-screen overflow-y-clip">
-      <div className="w-1/4 bg-gray-800 text-gray-100">
-        <div className="flex flex-col justify-center">
+      <div className="w-1/4 bg-gradient-to-br from-gray-800 to-gray-900 text-gray-100">
+        <div className="flex flex-col justify-center space-y-2 py-6">
           <button
-            className={`py-2 px-4 ${display === "chat" ? "bg-gray-900" : ""}`}
+            className={`py-2 px-4 hover:bg-gray-700 rounded-lg duration-200 ${
+              display === "chat" ? "text-gray-300 font-bold" : ""
+            }`}
             onClick={() => setDisplay("chat")}
           >
             Chat
           </button>
           <button
-            className={`py-2 px-4 ${
-              display === "summarize" ? "bg-gray-900" : ""
+            className={`py-2 px-4 hover:bg-gray-700 rounded-lg duration-200 ${
+              display === "summarize" ? "text-gray-300 font-bold" : ""
             }`}
             onClick={() => setDisplay("summarize")}
           >
             Summarize
           </button>
           <button
-            className={`py-2 px-4 ${display === "quiz" ? "bg-gray-900" : ""}`}
+            className={`py-2 px-4 hover:bg-gray-700 rounded-lg duration-200 ${
+              display === "quiz" ? "text-gray-300 font-bold" : ""
+            }`}
             onClick={() => setDisplay("quiz")}
           >
             Quiz

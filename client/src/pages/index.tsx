@@ -4,11 +4,19 @@ import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 import UploadFile from "../../components/UploadFile";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const router = useRouter();
+  const [lastfiles, setLastFiles] = useState<string[]>([]);
+  useEffect(() => {
+    const files = localStorage.getItem("files");
+    if (files) {
+      setLastFiles(JSON.parse(files));
+    }
+  }, []);
   return (
     <>
       <Head>
@@ -42,7 +50,9 @@ export default function Home() {
             className={styles.card}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => {router.push("/dashboard/axler")}}
+            onClick={() => {
+              router.push("/dashboard/axler");
+            }}
           >
             <h2 className={inter.className}>
               Linear Algebra - Sheldon Axler <span>-&gt;</span>
@@ -56,7 +66,9 @@ export default function Home() {
             className={styles.card}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => {router.push("/dashboard/principles")}}
+            onClick={() => {
+              router.push("/dashboard/principles");
+            }}
           >
             <h2 className={inter.className}>
               Principles - Ray Dalio <span>-&gt;</span>
@@ -71,7 +83,11 @@ export default function Home() {
             className={styles.card}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => {router.push("/dashboard/Harcourt-Mathematics-12-Advanced-Functions-and-Introductory-Calculus")}}
+            onClick={() => {
+              router.push(
+                "/dashboard/Harcourt-Mathematics-12-Advanced-Functions-and-Introductory-Calculus"
+              );
+            }}
           >
             <h2 className={inter.className}>
               Intro to Calculus - Harcourt Math <span>-&gt;</span>
@@ -81,6 +97,24 @@ export default function Home() {
               here!
             </p>
           </a>
+        </div>
+        <div className="flex flex-col  space-y-2">
+          <h2>
+            Previously uploaded texts will be available here for you to use.
+          </h2>
+          {lastfiles.map((file) => {
+            // get rid of .pdf from file
+            return (
+              <div
+                onClick={() => {
+                  router.push(`/dashboard/${file.split(".pdf")[0]}`);
+                }}
+                className="text-blue-500 cursor-pointer"
+              >
+                {file.split(".pdf")[0]}
+              </div>
+            );
+          })}
         </div>
       </main>
     </>

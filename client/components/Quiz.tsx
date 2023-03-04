@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 export default function Quiz({ fileName }: { fileName: string }) {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -94,16 +94,34 @@ export default function Quiz({ fileName }: { fileName: string }) {
 }
 
 function ChatMessage({ message }: { message: Message }) {
+  const [showMessage, setShowMessage] = useState(false);
   const isUser = message.author === "user";
+  const messageRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const element = messageRef.current;
+    if (element) {
+      setShowMessage(true);
+    }
+  }, []);
+
   if (message.isQuiz) {
     // @ts-ignore
     return QuizMessage({ quiz: message.quiz });
   }
+  
 
   return (
     <div
+      ref={messageRef}
       className={`py-2 px-4 rounded-lg max-w-xs mb-2 ${
-        isUser ? "ml-auto bg-blue-500 text-white" : "mr-auto bg-gray-300"
+        isUser
+          ? "ml-auto bg-gradient-to-br from-blue-400 to-blue-500 text-white"
+          : "mr-auto bg-gradient-to-br from-gray-200 to-gray-300 text-gray-500"
+      } ${
+        showMessage
+          ? "opacity-100 transition-opacity duration-500"
+          : "opacity-0"
       }`}
     >
       <p className={`${isUser ? "text-right" : ""}`}>{message.content}</p>
@@ -149,7 +167,7 @@ function QuizMessage({ quiz }: { quiz: QuizContent }) {
                   {option.isCorrect ? "Correct" : "Incorrect"}
                 </span>
               )}
-            </div> 
+            </div>
             {selectedOptionIndex === index && (
               <p className="mt-2 text-sm text-gray-500">{option.explanation}</p>
             )}
