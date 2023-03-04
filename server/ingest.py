@@ -10,7 +10,7 @@ from langchain.document_loaders import PagedPDFSplitter
 load_dotenv()
 os.environ["OPENAI_API_KEY"] = os.environ.get('OPENAI_API_KEY')
 
-loader = PagedPDFSplitter("server/data/Principles_ Life and Work.pdf")
+loader = PagedPDFSplitter("server/data/AXLER_LINEARALGEBRA.pdf")
 pages = loader.load_and_split()
 
 
@@ -18,7 +18,7 @@ pages = loader.load_and_split()
 store = FAISS.from_documents(pages, OpenAIEmbeddings())
 
 # store = FAISS.from_texts(filtered_docs, OpenAIEmbeddings())
-faiss.write_index(store.index, "docs.index")
+faiss.write_index(store.index, "docs1.index")
 store.index = None
-with open("faiss_store.pkl", "wb") as f:
+with open("faiss_store1.pkl", "wb") as f:
     pickle.dump(store, f)
