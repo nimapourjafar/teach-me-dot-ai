@@ -46,7 +46,8 @@ const Dashboard = () => {
         // @ts-ignore
         return <Chat fileName={file_name || ""} />;
       case "summarize":
-        return <Summarize chapters={chapters} />;
+        // @ts-ignore
+        return <Summarize chapters={chapters} fileName={file_name || ""} />;
       case "quiz":
         return <Quiz />;
       default:

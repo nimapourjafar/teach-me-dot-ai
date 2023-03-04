@@ -1,13 +1,62 @@
 import React, { useState } from "react";
 
-export default function Summarize({ chapters }: { chapters: string[] | null }) {
+export default function Summarize({
+  chapters,
+  fileName,
+}: {
+  chapters: string[] | null;
+  fileName: string;
+}) {
   const [selectedChapter, setSelectedChapter] = useState("");
-  const [summary, setSummary] = useState("");
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [botIsTalking, setBotIsTalking] = useState(false);
 
   const handleChapterSelect = (chapter: string) => {
+    setBotIsTalking(true);
     setSelectedChapter(chapter);
-    setSummary(`Summary of ${chapter} chapter.`);
+
+    const message: Message = {
+      author: "user",
+      content: `Summarize chapter ${chapter}. Give me an in-depth overview and explain the main points.`,
+    };
+    const updatedMessagesArray = [...messages, message];
+
+    setMessages([...messages, message]);
+
     // Call API or function to generate summary based on selected chapter
+
+    var formdata = new FormData();
+    formdata.append("filename", fileName);
+    formdata.append(
+      "question",
+      "Summarize chapter " +
+        chapter +
+        ". Give me an in-depth overview and explain the main points."
+    );
+
+    var requestOptions: RequestInit = {
+      method: "POST",
+      body: formdata,
+      redirect: "follow",
+    };
+
+    fetch("http://127.0.0.1:5000/generate", requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        console.log(result);
+        setMessages([
+          ...updatedMessagesArray,
+          {
+            author: "bot",
+            content: result,
+          },
+        ]);
+        setBotIsTalking(false);
+      })
+      .catch((error) => {
+        console.log("error", error);
+        setBotIsTalking(false);
+      });
   };
 
   return (
@@ -19,6 +68,7 @@ export default function Summarize({ chapters }: { chapters: string[] | null }) {
           {chapters.map((chapter) => (
             <button
               key={chapter}
+              disabled={botIsTalking}
               className={`py-2 px-4 rounded-lg mb-2 ${
                 selectedChapter === chapter
                   ? "bg-blue-500 text-white"
@@ -29,9 +79,15 @@ export default function Summarize({ chapters }: { chapters: string[] | null }) {
               {chapter}
             </button>
           ))}
-          {summary && (
-            <div className="py-2 px-4 rounded-lg max-w-xs mb-2 ml-auto bg-gray-300">
-              <p>{summary}</p>
+
+          <div className="flex-1 overflow-y-scroll">
+            {messages.map((message, index) => (
+              <ChatMessage key={index} message={message} />
+            ))}
+          </div>
+          {botIsTalking && (
+            <div className="py-2 px-4 rounded-lg max-w-xs mb-2 ml-auto bg-blue-500 text-white">
+              <p className="text-right">Teach me is replying...</p>
             </div>
           )}
         </div>
@@ -39,3 +95,21 @@ export default function Summarize({ chapters }: { chapters: string[] | null }) {
     </div>
   );
 }
+
+function ChatMessage({ message }: { message: Message }) {
+  const isUser = message.author === "user";
+  return (
+    <div
+      className={`py-2 px-4 rounded-lg max-w-xs mb-2 ${
+        isUser ? "ml-auto bg-blue-500 text-white" : "mr-auto bg-gray-300"
+      }`}
+    >
+      <p className={`${isUser ? "text-right" : ""}`}>{message.content}</p>
+    </div>
+  );
+}
+
+type Message = {
+  author: "user" | "bot";
+  content: string;
+};
